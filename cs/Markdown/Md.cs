@@ -9,17 +9,20 @@ public class Md
     {
         var parser = new MarkdownParser();
         Token root = parser.Parse(text);
-        PrintToken(root);
+        PrintToken(root, 0);
+        
+        var render = new Render();
+        string html = render.Start(root);
+        File.WriteAllText("resurses/output.md", html);
+        // Console.WriteLine(html);
     }
     
-    static void PrintToken(Token token, string indent = "")
+    static void PrintToken(Token token, int indent)
     {
-        Console.WriteLine($"{indent}{token.Type}: {(token.Content ?? "")}");
-        
+        Console.WriteLine(new string(' ', indent * 2) + token.Type + 
+                          (token.Content != null ? $" \"{token.Content}\"" : ""));
         foreach (var child in token.Children)
-        {
-            PrintToken(child, indent + "  ");
-        }
+            PrintToken(child, indent + 1);
     }
     
 }
