@@ -22,6 +22,27 @@ public class MarkdownParser
         while (!reader.CheckEndText())
         {
             var symbol = reader.GetSymbol();
+            
+            if (symbol == '\\' && 
+                !reader.CheckEndText() && 
+                (reader.CheckNextPositions() == '_' || 
+                 reader.CheckNextPositions() == '#' ||
+                 (reader.CheckNextPositions() == '_' && reader.CheckNextPositions(2) == '_')))
+            {
+                if (reader.CheckNextPositions() == '_' && reader.CheckNextPositions(2) == '_')
+                {
+                    sb.Append(symbol);
+                    sb.Append(reader.GetSymbol());
+                    sb.Append('\\');
+                    sb.Append(reader.GetSymbol());
+                    continue;
+                }
+
+                sb.Append(symbol);
+                sb.Append(reader.GetSymbolWithoutMove());
+                continue;
+            }
+            
             //заголовок
             if (symbol == '#' && (reader.Position == 1 || reader.CheckNextPositions(-1) == '\n'))
             {
