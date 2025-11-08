@@ -28,12 +28,6 @@ public class CharReader
         position++;
         return text[position - 1];
     }
-    public char GetSymbolWithoutMove()
-    {
-        if (CheckEndText())
-            return '\0';
-        return text[position];
-    }
 
     public char CheckNextPositions(int steps = 1)
     {

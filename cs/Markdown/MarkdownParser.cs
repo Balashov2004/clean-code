@@ -1,4 +1,5 @@
 
+using System.Collections.Generic;
 using System.Text;
 
 namespace Markdown;
@@ -23,23 +24,19 @@ public class MarkdownParser
         {
             var symbol = reader.GetSymbol();
             
-            if (symbol == '\\' && 
-                !reader.CheckEndText() && 
-                (reader.CheckNextPositions() == '_' || 
-                 reader.CheckNextPositions() == '#' ||
-                 (reader.CheckNextPositions() == '_' && reader.CheckNextPositions(2) == '_')))
+            if (symbol == '\\' && !reader.CheckEndText())
             {
-                if (reader.CheckNextPositions() == '_' && reader.CheckNextPositions(2) == '_')
+                char next = reader.CheckNextPositions(0);
+                
+                
+                if (next == '_' || next == '#' || next == '\\')
                 {
-                    sb.Append(symbol);
-                    sb.Append(reader.GetSymbol());
-                    sb.Append('\\');
-                    sb.Append(reader.GetSymbol());
+                    reader.MovePositions();
+                    sb.Append('\\' + next.ToString());
                     continue;
                 }
-
-                sb.Append(symbol);
-                sb.Append(reader.GetSymbolWithoutMove());
+                
+                sb.Append('\\');
                 continue;
             }
             
@@ -55,9 +52,10 @@ public class MarkdownParser
                 continue;
             }
             // жирный
-            else if (symbol == '_' && reader.GetSymbol() == '_')
+            else if (symbol == '_' && reader.CheckNextPositions(0) == '_')
             {
                 FlushText(stack.Peek(), sb);
+                reader.MovePositions(1);
                 
                 if (stack.Peek().Type == TokenType.Bold)
                 {
@@ -98,7 +96,6 @@ public class MarkdownParser
                     headerFlag = false;
                 }
                 stack.Peek().Children.Add(new Token(TokenType.Text, "\n"));
-
                 continue;
             }
             
