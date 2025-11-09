@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 
 namespace Markdown;
 
@@ -18,6 +19,20 @@ public class SymbolRules
     
     public bool NextSpace(CharReader reader, int i = 0)
         => char.IsWhiteSpace(reader.CheckNextPositions(i));
+
+    public bool EmptyLine(CharReader reader, StringBuilder sb)
+    {
+        sb.Append("\\_\\_");
+        reader.MovePositions();
+        if (reader.CheckNextPositions(1) == '_')
+        {
+            while (reader.GetSymbol() == '_')
+                sb.Append("\\_");
+            return true;
+        }
+
+        return false;
+    }
 
     public bool IsItalic(char symbol, CharReader reader)
     {

@@ -5,7 +5,7 @@ namespace Markdown;
 
 public class Render
 {
-    public string Start(Token root)
+    public string RenderToHtml(Token root)
     {
         var html = new StringBuilder();
         html.Append(RenderToken(root));

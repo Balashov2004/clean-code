@@ -58,6 +58,8 @@ public class MarkdownParser
                     reader.MovePositions(1);
                     continue;
                 }
+                if (rules.EmptyLine(reader, sb))
+                    continue;
                 
                 
                 tokenBuilder.SwitchBold(stack, sb);

@@ -24,7 +24,7 @@ public class Md
     public void Render()
     {
         Token root = parser.Parse(WorkWithFile(input, mode: "r"));
-        string html = render.Start(root);
+        string html = render.RenderToHtml(root);
         
         WorkWithFile(output, html, "w");
     }
