@@ -23,18 +23,19 @@ public class Md
 
     public void Render()
     {
-        Token root = parser.Parse(WorkWithFile(input, mode: "read"));
+        Token root = parser.Parse(WorkWithFile(input, mode: "r"));
         string html = render.Start(root);
         
-        WorkWithFile(output, html, html);
+        WorkWithFile(output, html, "w");
     }
 
     private string WorkWithFile(string path, string content = "null", string mode = "read")
     {
-        if (mode == "read")
+        if (mode == "r")
             return File.ReadAllText(path);
-        else if (mode == "write")
+        else if (mode == "w")
             File.WriteAllText(path, content);
+
         return null;
     }
     

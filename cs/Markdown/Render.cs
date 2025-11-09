@@ -50,6 +50,13 @@ public class Render
                     sb.Append(RenderToken(child));
                 sb.Append("</em>");
                 break;
+            
+            case TokenType.Link:
+                sb.Append($"<a href=\"{token.Value}\">");
+                foreach (var child in token.Children)
+                    sb.Append(child.Content);
+                sb.Append("</a>");
+                break;
 
             default:
                 foreach (var child in token.Children)

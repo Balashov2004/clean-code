@@ -51,6 +51,14 @@ public class MarkdownParser
                     reader.MovePositions(1);
                     continue;
                 }
+                if ((rules.NextSpace(reader, 1) &&  !rules.InBold(stack)) ||
+                     (rules.NextSpace(reader, - 2) && rules.InBold(stack)))
+                {
+                    sb.Append("\\_\\_");
+                    reader.MovePositions(1);
+                    continue;
+                }
+                
                 
                 tokenBuilder.SwitchBold(stack, sb);
                 reader.MovePositions(1);
@@ -61,7 +69,22 @@ public class MarkdownParser
             // Курсив
             else if (rules.IsItalic(symbol, reader))
             {
+                if ((rules.NextSpace(reader) && !rules.InItalic(stack)) || 
+                    (rules.NextSpace(reader, - 2) && rules.InItalic(stack)))
+                {
+                    sb.Append("\\_");
+                    continue;
+                }
+                
                 tokenBuilder.SwitchItalic(stack, sb);
+                continue;
+            }
+            
+            // Ссылка
+
+            else if (symbol == '[')
+            {
+                tokenBuilder.Link(stack, sb, reader);
                 continue;
             }
 
@@ -76,8 +99,6 @@ public class MarkdownParser
             
         }
         tokenBuilder.FlushText(stack.Peek(), sb);
-        
         return root;
     }
-    
 }

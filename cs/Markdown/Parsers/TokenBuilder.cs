@@ -40,6 +40,37 @@ public class TokenBuilder
             stack.Push(italic);
         }
     }
+
+    public void Link(Stack<Token> stack, StringBuilder sb, CharReader reader)
+    {
+        FlushText(stack.Peek(), sb);
+        
+        string linkText = "";
+        string linkUrl = "";
+        
+        while (!reader.CheckEndText())
+        {
+            char next = reader.GetSymbol();
+            if (next == ']') 
+                break;
+            linkText += next;
+        }
+        reader.MovePositions();
+        
+        while (!reader.CheckEndText())
+        {
+            char next = reader.GetSymbol();
+            if (next == ')') 
+                break;
+            linkUrl += next;
+        }
+        FlushText(stack.Peek(), sb);
+        var link = new Token(TokenType.Link);
+        link.Children.Add(new Token(TokenType.Text, linkText));
+        link.Value = linkUrl;
+        stack.Peek().Children.Add(link);    
+        
+    }
     
     public void NewLine(Stack<Token> stack, StringBuilder sb, ref bool headerFlag)
     {
@@ -62,4 +93,6 @@ public class TokenBuilder
             sb.Clear();
         }
     }
+    
+    
 }

@@ -11,7 +11,7 @@ public class EscapeHandler
 
         char next = reader.CheckNextPositions(0);
 
-        if (next == '_' || next == '#' || next == '\\')
+        if (next == '_' || next == '#' || next == '\\' || next == '[')
         {
             reader.MovePositions();
             sb.Append('\\');
