@@ -9,8 +9,9 @@ namespace Markdown
     {
         static void Main(string[] args)
         {
-            var path = File.ReadAllText("resurses/input.txt");
-            new Md(path);
+            var md = new Md("resurses/input.txt", "resurses/output.md");
+            md.Render();
+
         }
     }
 };

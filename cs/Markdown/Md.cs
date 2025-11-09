@@ -6,24 +6,36 @@ namespace Markdown;
 
 public class Md
 {
-    public Md(string text)
-    {
-        var parser = new MarkdownParser();
-        Token root = parser.Parse(text);
-        PrintToken(root, 0);
-        
-        var render = new Render();
-        string html = render.Start(root);
-        File.WriteAllText("resurses/output.md", html);
-        // Console.WriteLine(html);
-    }
+    private string input;
+    private string output;
+    private MarkdownParser parser;
+    private Render render;
     
-    static void PrintToken(Token token, int indent)
+    
+    public Md(string input, string output)
     {
-        Console.WriteLine(new string(' ', indent * 2) + token.Type + 
-                          (token.Content != null ? $" \"{token.Content}\"" : ""));
-        foreach (var child in token.Children)
-            PrintToken(child, indent + 1);
+        this.input = input;
+        this.output = output;
+        parser = new MarkdownParser();
+        render = new Render();
+        
+    }
+
+    public void Render()
+    {
+        Token root = parser.Parse(WorkWithFile(input, mode: "read"));
+        string html = render.Start(root);
+        
+        WorkWithFile(output, html, html);
+    }
+
+    private string WorkWithFile(string path, string content = "null", string mode = "read")
+    {
+        if (mode == "read")
+            return File.ReadAllText(path);
+        else if (mode == "write")
+            File.WriteAllText(path, content);
+        return null;
     }
     
 }
