@@ -24,6 +24,8 @@ public class MarkdownParser
         var sb = new StringBuilder();
         var stack = new Stack<Token>();
         var headerFlag = false;
+        // var crossFlag = false;
+        // var index = 0;
         stack.Push(root);
 
         while (!reader.CheckEndText())
@@ -77,13 +79,19 @@ public class MarkdownParser
                     sb.Append("\\_");
                     continue;
                 }
+
+                // if (rules.InBold(stack))
+                // {
+                //     crossFlag = true;
+                //     index = sb.
+                // }
+                    
                 
                 tokenBuilder.SwitchItalic(stack, sb);
                 continue;
             }
             
             // Ссылка
-
             else if (symbol == '[')
             {
                 tokenBuilder.Link(stack, sb, reader);

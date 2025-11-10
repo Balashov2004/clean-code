@@ -22,10 +22,10 @@ public class SymbolRules
 
     public bool EmptyLine(CharReader reader, StringBuilder sb)
     {
-        sb.Append("\\_\\_");
-        reader.MovePositions();
         if (reader.CheckNextPositions(1) == '_')
         {
+            sb.Append("\\_\\_");
+            reader.MovePositions();
             while (reader.GetSymbol() == '_')
                 sb.Append("\\_");
             return true;
