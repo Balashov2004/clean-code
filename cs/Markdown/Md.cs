@@ -3,7 +3,6 @@ using System;
 using System.IO;
 
 namespace Markdown;
-
 public class Md
 {
     private string input;
@@ -21,12 +20,13 @@ public class Md
         
     }
 
-    public void Render()
+    public string Render()
     {
         Token root = parser.Parse(WorkWithFile(input, mode: "r"));
         string html = render.RenderToHtml(root);
         
-        WorkWithFile(output, html, "w");
+        // WorkWithFile(output, html, "w");
+        return html;
     }
 
     private string WorkWithFile(string path, string content = "null", string mode = "read")

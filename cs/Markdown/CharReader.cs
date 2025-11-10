@@ -16,7 +16,7 @@ public class CharReader
 
     public bool CheckEndText(int steps = 0)
     {
-        if (position + steps >= length)
+        if (position + steps >= length || position + steps < 0)
             return true;
         return false;
     }
