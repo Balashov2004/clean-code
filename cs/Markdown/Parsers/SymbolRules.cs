@@ -6,7 +6,7 @@ namespace Markdown;
 public class SymbolRules
 {
     public bool IsHeader(char symbol, CharReader reader)
-        => symbol == '#' && (reader.CheckNextPositions(-1) == '\n' || reader.Position == 1);
+        => symbol == '#' && (reader.CheckNextPositions(-2) == '\n' || reader.Position == 1);
 
     public bool IsBold(char symbol, CharReader reader)
         => symbol == '_' && reader.CheckNextPositions(0) == '_';
@@ -24,7 +24,7 @@ public class SymbolRules
     {
         if (reader.CheckNextPositions(1) == '_')
         {
-            sb.Append("\\_\\_");
+            sb.Append("\\_");
             reader.MovePositions();
             while (reader.GetSymbol() == '_')
                 sb.Append("\\_");
