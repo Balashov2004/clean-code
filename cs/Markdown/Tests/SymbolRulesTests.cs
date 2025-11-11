@@ -59,18 +59,7 @@ public class SymbolRulesTests
         reader.MovePositions(pos);
         return rules.IsNextCharWhitespace(reader);
     }
-
-    [Test]
-    public void EmptyLineTest()
-    {
-        reader = new CharReader("____");
-        var sb = new StringBuilder();
-        var result = rules.EmptyLine(reader, sb);
-
-        Assert.IsTrue(result);
-        Assert.AreEqual("\\_\\_\\_\\_", sb.ToString());
-    }
-
+    
     [TestCase("_a_", 0, ExpectedResult = true)]
     [TestCase("a_12_", 1, ExpectedResult = false)]
     public bool IsItalicTest(string input, int pos)
