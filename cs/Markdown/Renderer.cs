@@ -1,18 +1,19 @@
 
 using System.Text;
+using Markdown.Interfaces;
 
 namespace Markdown;
 
-public class Render
+public class Renderer :  IRenderer
 {
-    public string RenderToHtml(Token root)
+    public string Render(Token root)
     {
         var html = new StringBuilder();
-        html.Append(RenderToken(root));
+        html.Append(RenderToHtml(root));
         return html.ToString();
     }
 
-    private string RenderToken(Token token)
+    private string RenderToHtml(Token token)
     {
         var sb = new StringBuilder();
 
@@ -25,45 +26,43 @@ public class Render
                 }
                 else if (token.Children.Count > 0)
                 {
-                    foreach (var child in token.Children)
-                        sb.Append(RenderToken(child));
+                    sb.Append(RenderChildren(token));
                 }
                 break;
 
             case TokenType.Header:
                 sb.Append("<h1>");
-                foreach (var child in token.Children)
-                    sb.Append(RenderToken(child));
+                sb.Append(RenderChildren(token));
                 sb.Append("</h1>\n");
                 break;
 
             case TokenType.Bold:
                 sb.Append("<strong>");
-                foreach (var child in token.Children)
-                    sb.Append(RenderToken(child));
+                sb.Append(RenderChildren(token));
                 sb.Append("</strong>");
                 break;
 
             case TokenType.Italic:
                 sb.Append("<em>");
-                foreach (var child in token.Children)
-                    sb.Append(RenderToken(child));
+                sb.Append(RenderChildren(token));
                 sb.Append("</em>");
                 break;
             
             case TokenType.Link:
-                sb.Append($"<a href=\"{token.Value}\">");
-                foreach (var child in token.Children)
-                    sb.Append(child.Content);
-                sb.Append("</a>");
+                sb.Append($"<a href=\"{token.Value}\">{token.Children[0].Content}</a>");
                 break;
 
             default:
-                foreach (var child in token.Children)
-                    sb.Append(RenderToken(child));
+                sb.Append(RenderChildren(token));
                 break;
         }
-        
+        return sb.ToString();
+    }
+    private string RenderChildren(Token token)
+    {
+        var sb = new StringBuilder();
+        foreach (var child in token.Children)
+            sb.Append(RenderToHtml(child));
         return sb.ToString();
     }
 

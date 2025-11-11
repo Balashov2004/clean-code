@@ -6,10 +6,10 @@ public class EscapeHandler
 {
     public bool TryHandle(char symbol, CharReader reader, StringBuilder sb)
     {
-        if (symbol != '\\' || reader.CheckEndText())
+        if (symbol != '\\' || reader.IsEndOfText())
             return false;
 
-        char next = reader.CheckNextPositions(0);
+        var next = reader.CheckNextPositions(0);
 
         if (next == '_' || next == '#' || next == '\\' || next == '[')
         {

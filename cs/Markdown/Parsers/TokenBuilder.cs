@@ -45,29 +45,28 @@ public class TokenBuilder
     {
         FlushText(stack.Peek(), sb);
         
-        string linkText = "";
-        string linkUrl = "";
+        var linkText = new StringBuilder();
+        var linkUrl = new StringBuilder();
         
-        while (!reader.CheckEndText())
+        while (!reader.IsEndOfText())
         {
             char next = reader.GetSymbol();
             if (next == ']') 
                 break;
-            linkText += next;
+            linkText.Append(next);
         }
         reader.MovePositions();
         
-        while (!reader.CheckEndText())
+        while (!reader.IsEndOfText())
         {
             char next = reader.GetSymbol();
             if (next == ')') 
                 break;
-            linkUrl += next;
+            linkUrl.Append(next);
         }
-        FlushText(stack.Peek(), sb);
         var link = new Token(TokenType.Link);
-        link.Children.Add(new Token(TokenType.Text, linkText));
-        link.Value = linkUrl;
+        FlushText(link, linkText);
+        link.Value = linkUrl.ToString();
         stack.Peek().Children.Add(link);    
         
     }

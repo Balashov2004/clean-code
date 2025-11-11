@@ -1,6 +1,8 @@
+using Markdown.Interfaces;
+
 namespace Markdown;
 
-public class CharReader
+public class CharReader : ICharReader
 {
     private readonly string text;
     private int position;
@@ -14,7 +16,7 @@ public class CharReader
     
     public int Position => position;
 
-    public bool CheckEndText(int steps = 0)
+    public bool IsEndOfText(int steps = 0)
     {
         if (position + steps >= length || position + steps < 0)
             return true;
@@ -23,7 +25,7 @@ public class CharReader
 
     public char GetSymbol()
     {
-        if (CheckEndText())
+        if (IsEndOfText())
             return '\0';
         position++;
         return text[position - 1];
@@ -31,7 +33,7 @@ public class CharReader
 
     public char CheckNextPositions(int steps = 1)
     {
-        if (CheckEndText(steps))
+        if (IsEndOfText(steps))
             return '\0';
         return text[position + steps];
     }

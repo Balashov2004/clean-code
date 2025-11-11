@@ -2,10 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Markdown.Interfaces;
 
 namespace Markdown;
 
-public class MarkdownParser
+public class MarkdownParser : IParser
 {
     
     private readonly EscapeHandler escapeHandler = new();
@@ -18,7 +19,7 @@ public class MarkdownParser
         return ParseTokens(reader);
     }
 
-    public Token ParseTokens(CharReader reader)
+    private Token ParseTokens(CharReader reader)
     {
         var root = new Token(TokenType.Text);
         var sb = new StringBuilder();
@@ -27,7 +28,7 @@ public class MarkdownParser
 
         stack.Push(root);
 
-        while (!reader.CheckEndText())
+        while (!reader.IsEndOfText())
         {
             var symbol = reader.GetSymbol();
             
@@ -46,19 +47,19 @@ public class MarkdownParser
             // жирный
             else if (rules.IsBold(symbol, reader))
             {
-                if (reader.CheckEndText(1) && reader.CheckEndText(-2))
+                if (!reader.IsEndOfText(1) && !reader.IsEndOfText(-2))
                 {
+                    if (rules.EmptyLine(reader, sb))
+                        continue;
 
-                    if ((rules.NextSpace(reader, 1) && !rules.InBold(stack)) ||
-                        (rules.NextSpace(reader, -2) && rules.InBold(stack)))
+                    if ((rules.IsNextCharWhitespace(reader, 1) && !rules.InBold(stack)) ||
+                        (rules.IsNextCharWhitespace(reader, -2) && rules.InBold(stack)))
                     {
                         sb.Append("\\_\\_");
                         reader.MovePositions(1);
                         continue;
                     }
-
-                    if (reader.CheckEndText(1) && rules.EmptyLine(reader, sb))
-                        continue;
+                    
                 }
 
                 if (rules.InItalic(stack))
@@ -79,10 +80,10 @@ public class MarkdownParser
             // Курсив
             else if (rules.IsItalic(symbol, reader))
             {
-                if (!reader.CheckEndText() && !reader.CheckEndText(-2))
+                if (!reader.IsEndOfText() && !reader.IsEndOfText(-2))
                 {
-                    if ((rules.NextSpace(reader) && !rules.InItalic(stack)) ||
-                        (rules.NextSpace(reader, -2) && rules.InItalic(stack)))
+                    if ((rules.IsNextCharWhitespace(reader) && !rules.InItalic(stack)) ||
+                        (rules.IsNextCharWhitespace(reader, -2) && rules.InItalic(stack)))
                     {
                         sb.Append("\\_");
                         continue;

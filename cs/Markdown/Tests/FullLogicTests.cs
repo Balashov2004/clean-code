@@ -7,13 +7,13 @@ namespace Markdown.Tests;
 public class FullLogicTests
 {
     private MarkdownParser parser;
-    private Render renderer;
+    private Renderer render;
 
     [SetUp]
     public void Setup()
     {
         parser = new MarkdownParser();
-        renderer = new Render();
+        render = new Renderer();
     }
     
     [TestCase(
@@ -44,6 +44,18 @@ public class FullLogicTests
         "эти <em>подчерки \\_не считаются</em> окончанием")]
     [TestCase("# Заголовок __с _разными_ символами__",
         "<h1> Заголовок <strong>с <em>разными</em> символами</strong></h1>")]
+    [TestCase("[google](https://www.google.com/?hl=ru&zx=1762717073796&no_sw_cr=1)",
+        "<a href=\"https://www.google.com/?hl=ru&zx=1762717073796&no_sw_cr=1\">google</a>")]
+    [TestCase("",
+        "")]
+    [TestCase("Если внутри подчерков пустая строка ____, то они остаются символами подчерка.",
+        "Если внутри подчерков пустая строка \\_\\_\\_\\_, то они остаются символами подчерка.")]
+    [TestCase("Если внутри подчерков пустая строка ____, то они остаются си_мво_лами подчерка.\n" +
+              "[google](https://www.google.com/?hl=ru&zx=1762717073796&no_sw_cr=1)__привет__\n" +
+              "эти__ под__че__рки__ не считаются выделением",
+        "Если внутри подчерков пустая строка \\_\\_\\_\\_, то они остаются си<em>мво</em>лами подчерка.\n" +
+        "<a href=\"https://www.google.com/?hl=ru&zx=1762717073796&no_sw_cr=1\">google</a><strong>привет</strong>\n" +
+        "эти\\_\\_ под<strong>че</strong>рки\\_\\_ не считаются выделением")]
     //Ниже три правила не проходят
     // [TestCase("ра_зных сл_овах",
     //     "ра\\_зных сл\\_овах")]
@@ -54,7 +66,7 @@ public class FullLogicTests
     public void Render_Correctly(string input, string expected)
     {
         var root = parser.Parse(input);
-        var html = renderer.RenderToHtml(root).Trim();
+        var html = render.Render(root).Trim();
         
         Assert.AreEqual(expected, html);
     }

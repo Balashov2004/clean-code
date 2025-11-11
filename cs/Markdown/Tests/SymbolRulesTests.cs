@@ -57,7 +57,7 @@ public class SymbolRulesTests
     {
         reader = new CharReader(input);
         reader.MovePositions(pos);
-        return rules.NextSpace(reader);
+        return rules.IsNextCharWhitespace(reader);
     }
 
     [Test]

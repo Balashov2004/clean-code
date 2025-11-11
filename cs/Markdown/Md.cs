@@ -1,14 +1,15 @@
 
 using System;
 using System.IO;
+using Markdown.Interfaces;
 
 namespace Markdown;
-public class Md
+public class Md : IMd
 {
-    private string input;
-    private string output;
+    private readonly string input;
+    private readonly string output;
     private MarkdownParser parser;
-    private Render render;
+    private Renderer render;
     
     
     public Md(string input, string output)
@@ -16,27 +17,18 @@ public class Md
         this.input = input;
         this.output = output;
         parser = new MarkdownParser();
-        render = new Render();
+        render = new Renderer();
         
     }
 
-    public string Render()
+    public string Start()
     {
-        Token root = parser.Parse(WorkWithFile(input, mode: "r"));
-        string html = render.RenderToHtml(root);
+        var root = parser.Parse(WorkWithFile.Reader(input));
+        var html = render.Render(root);
         
-        // WorkWithFile(output, html, "w");
+        WorkWithFile.Writer(output, html);
         return html;
     }
-
-    private string WorkWithFile(string path, string content = "null", string mode = "read")
-    {
-        if (mode == "r")
-            return File.ReadAllText(path);
-        else if (mode == "w")
-            File.WriteAllText(path, content);
-
-        return null;
-    }
+    
     
 }
