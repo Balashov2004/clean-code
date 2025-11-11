@@ -51,7 +51,40 @@ public class SymbolRules
 
         return true;
     }
+
+    public bool IsPrevCharWhiteLetter(CharReader reader)
+        => char.IsLetter(reader.CheckNextPositions(-2));
+
+    public void InWorld(Stack<Token> stack, StringBuilder sb, CharReader reader)
+    {
+        var word = new StringBuilder();
+        word.Append(reader.CheckNextPositions(0));
+        while (!reader.IsEndOfText())
+        {
+            var next = reader.CheckNextPositions();
+            if (next == ' ' || reader.IsEndOfText(1))
+            {
+                reader.MovePositions();
+                sb.Append("\\_" + word);
+                break;
+            }
+            else if (next == '_')
+            {
+                reader.MovePositions(2);
+                var tokenBuilder = new TokenBuilder();
+                var italic = new Token(TokenType.Italic);
+                tokenBuilder.FlushText(stack.Peek(), sb);
+                stack.Peek().Children.Add(italic);
+                stack.Push(italic);
+                tokenBuilder.FlushText(italic, word);
+                stack.Pop();
+                break;
+
+            }
+            word.Append(next);
+            reader.MovePositions();
+        }
+    }
     
-    
-    
+
 }

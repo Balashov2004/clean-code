@@ -88,6 +88,12 @@ public class MarkdownParser : IParser
                         sb.Append("\\_");
                         continue;
                     }
+
+                    if ((rules.IsPrevCharWhiteLetter(reader) && !rules.InItalic(stack)))
+                    {
+                        rules.InWorld(stack, sb, reader);
+                        continue;
+                    }
                 }
 
                 tokenBuilder.SwitchItalic(stack, sb);
